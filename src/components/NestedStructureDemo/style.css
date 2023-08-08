@@ -1,0 +1,12 @@
+.node-wrapper {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.node-wrapper .toolbar {
+  margin-left: 10px;
+}
+
+.node-wrapper .toolbar button {
+  margin-right: 10px;
+}
