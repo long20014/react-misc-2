@@ -43,27 +43,33 @@ const TreeNode = (props) => {
 
   const addChild = (content) => {
     const lastChild = childNodes.length > 0 ? childNodes[childNodes.length - 1] : null;
+    const addedValue = 2;
     const treeRightNodes = lastChild
       ? tree.filter((nodeItem) => nodeItem.left > lastChild.right)
       : tree.filter((nodeItem) => nodeItem.left > node.right);
     const newTree = tree.map((nodeItem) => {
-      // if (nodeItem.left === 1) {
-      //   return { ...nodeItem, right: nodeItem.right + 2 };
-      // }
       if (lastChild && nodeItem.left > lastChild.right) {
-        return { ...nodeItem, left: nodeItem.left + 2, right: nodeItem.right + 2 };
+        return {
+          ...nodeItem,
+          left: nodeItem.left + addedValue,
+          right: nodeItem.right + addedValue,
+        };
       }
       if (nodeItem.left > node.right) {
-        return { ...nodeItem, left: nodeItem.left + 2, right: nodeItem.right + 2 };
+        return {
+          ...nodeItem,
+          left: nodeItem.left + addedValue,
+          right: nodeItem.right + addedValue,
+        };
       }
       if (lastChild && nodeItem.right > lastChild.right && nodeItem.left < lastChild.left) {
-        return { ...nodeItem, right: nodeItem.right + 2 };
+        return { ...nodeItem, right: nodeItem.right + addedValue };
       }
       if (nodeItem.right > node.right && nodeItem.left < node.left) {
-        return { ...nodeItem, right: nodeItem.right + 2 };
+        return { ...nodeItem, right: nodeItem.right + addedValue };
       }
       if (nodeItem.right === node.right) {
-        return { ...nodeItem, right: nodeItem.right + 2 }; // currentNode
+        return { ...nodeItem, right: nodeItem.right + addedValue }; // currentNode
       }
       return { ...nodeItem };
     });
@@ -84,7 +90,33 @@ const TreeNode = (props) => {
   };
 
   const deleteNode = () => {
-    return;
+    const treeRightNodes = tree.filter((nodeItem) => nodeItem.left > node.right);
+    const minusValue = node.right - node.left + 1;
+    const newTree = tree
+      .map((nodeItem) => {
+        if (nodeItem.left > node.right) {
+          return {
+            ...nodeItem,
+            left: nodeItem.left - minusValue,
+            right: nodeItem.right - minusValue,
+          };
+        }
+        if (nodeItem.right > node.right && nodeItem.left < node.left) {
+          return { ...nodeItem, right: nodeItem.right - minusValue };
+        }
+        if (
+          nodeItem.right === node.right ||
+          (nodeItem.left > node.left && nodeItem.right < node.right)
+        ) {
+          return null; // currentNode and children
+        }
+        return { ...nodeItem };
+      })
+      .filter((nodeItem) => nodeItem !== null);
+
+    console.log(treeRightNodes);
+    console.log(newTree);
+    setTree(newTree);
   };
 
   return (
@@ -118,6 +150,7 @@ const TreeNode = (props) => {
 
 const Tree = (props) => {
   const [tree, setTree] = useState(initialTree);
+
   const addComment = () => {
     const childNodes = tree.filter(
       (nodeItem) =>
