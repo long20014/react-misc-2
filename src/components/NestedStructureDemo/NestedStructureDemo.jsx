@@ -122,7 +122,10 @@ const TreeNode = (props) => {
   return (
     <li>
       <div className="node-wrapper">
-        <div className="node-content">{node.content}</div>
+        <div className="node-content">
+          {`${node.content} `}
+          <span style={{ color: "green" }}>{`(${node.left}:${node.right})`}</span>
+        </div>
         <div className="toolbar">
           <button onClick={() => addChild(`${node.content}-${childNodes.length + 1}`)}>
             add child
