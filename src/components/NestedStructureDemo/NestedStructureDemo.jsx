@@ -1,42 +1,55 @@
-import { useState } from "react";
-import "./style.css";
+import { useState } from 'react';
+import './style.css';
 
-const initialTree = [
-  {
-    content: "Root Node",
-    depth: 0,
-    left: 1,
-    right: 10,
-  },
-  {
-    content: "Comment 1",
-    depth: 1,
-    left: 2,
-    right: 7,
-  },
-  {
-    content: "Comment 2",
-    depth: 1,
-    left: 8,
-    right: 9,
-  },
-  {
-    content: "Comment 1-1",
-    depth: 2,
-    left: 3,
-    right: 6,
-  },
-  {
-    content: "Comment 1-1-1",
-    depth: 3,
-    left: 4,
-    right: 5,
-  },
+const COMMENT = 'comment';
+const REPLY = 'reply';
+
+const initialData = [
+  [
+    {
+      id: 1,
+      rootId: null,
+      type: COMMENT,
+      content: 'Comment 1',
+      depth: 0,
+      left: 1,
+      right: 6,
+    },
+    {
+      id: 2,
+      rootId: 1,
+      type: REPLY,
+      content: 'Comment 1-1',
+      depth: 1,
+      left: 2,
+      right: 5,
+    },
+    {
+      id: 3,
+      rootId: 1,
+      type: REPLY,
+      content: 'Comment 1-1-1',
+      depth: 2,
+      left: 3,
+      right: 4,
+    },
+  ],
+  [
+    {
+      id: 4,
+      rootId: null,
+      type: COMMENT,
+      content: 'Comment 2',
+      depth: 0,
+      left: 1,
+      right: 2,
+    },
+  ],
 ];
 
 const TreeNode = (props) => {
-  const { node, tree, setTree } = props;
-  const childNodes = tree.filter(
+  const { node, treeData, data, updateData, treeIdx } = props;
+  const childNodes = treeData.filter(
     (nodeItem) =>
       nodeItem.left > node.left && nodeItem.right < node.right && nodeItem.depth === node.depth + 1
   );
@@ -45,9 +58,9 @@ const TreeNode = (props) => {
     const lastChild = childNodes.length > 0 ? childNodes[childNodes.length - 1] : null;
     const addedValue = 2;
     const treeRightNodes = lastChild
-      ? tree.filter((nodeItem) => nodeItem.left > lastChild.right)
-      : tree.filter((nodeItem) => nodeItem.left > node.right);
-    const newTree = tree.map((nodeItem) => {
+      ? treeData.filter((nodeItem) => nodeItem.left > lastChild.right)
+      : treeData.filter((nodeItem) => nodeItem.left > node.right);
+    const newTree = treeData.map((nodeItem) => {
       if (lastChild && nodeItem.left > lastChild.right) {
         return {
           ...nodeItem,
@@ -78,21 +91,25 @@ const TreeNode = (props) => {
     const right = left + 1;
 
     const newNode = {
+      id: new Date().getTime(),
+      rootId: node.id,
+      type: REPLY,
       content: content,
       depth: node.depth + 1,
       left,
       right,
     };
-    console.log(treeRightNodes);
     newTree.push(newNode);
     console.log(newTree);
-    setTree(newTree);
+    data[treeIdx] = newTree;
+    console.log(data);
+    updateData([...data]);
   };
 
   const deleteNode = () => {
-    const treeRightNodes = tree.filter((nodeItem) => nodeItem.left > node.right);
+    const treeRightNodes = treeData.filter((nodeItem) => nodeItem.left > node.right);
     const minusValue = node.right - node.left + 1;
-    const newTree = tree
+    const newTree = treeData
       .map((nodeItem) => {
         if (nodeItem.left > node.right) {
           return {
@@ -116,7 +133,9 @@ const TreeNode = (props) => {
 
     console.log(treeRightNodes);
     console.log(newTree);
-    setTree(newTree);
+    data[treeIdx] = newTree;
+    console.log(data);
+    updateData([...data]);
   };
 
   return (
@@ -124,7 +143,7 @@ const TreeNode = (props) => {
       <div className="node-wrapper">
         <div className="node-content">
           {`${node.content} `}
-          <span style={{ color: "green" }}>{`(${node.left}:${node.right})`}</span>
+          <span style={{ color: 'green' }}>{`(${node.left}:${node.right})`}</span>
         </div>
         <div className="toolbar">
           <button onClick={() => addChild(`${node.content}-${childNodes.length + 1}`)}>
@@ -138,10 +157,12 @@ const TreeNode = (props) => {
           {childNodes.map((nodeItem) => {
             return (
               <TreeNode
-                key={`${nodeItem.left}:${nodeItem.right}`}
+                key={`${node.id}`}
                 node={nodeItem}
-                tree={tree}
-                setTree={setTree}
+                treeData={treeData}
+                data={data}
+                updateData={updateData}
+                treeIdx={treeIdx}
               />
             );
           })}
@@ -152,63 +173,68 @@ const TreeNode = (props) => {
 };
 
 const Tree = (props) => {
-  const [tree, setTree] = useState(initialTree);
-
-  const addComment = () => {
-    const childNodes = tree.filter(
-      (nodeItem) =>
-        nodeItem.left > tree[0].left &&
-        nodeItem.right < tree[0].right &&
-        nodeItem.depth === tree[0].depth + 1
-    );
-    const newTree = tree.map((nodeItem) => {
-      if (nodeItem.depth === 0) {
-        return { ...nodeItem, right: nodeItem.right + 2 };
-      }
-      return { ...nodeItem };
-    });
-    const newNode = {
-      content: `Comment ${childNodes.length + 1}`,
-      depth: tree[0].depth + 1,
-      left: tree[0].right,
-      right: tree[0].right + 1,
-    };
-    newTree.push(newNode);
-    console.log(newTree);
-    setTree(newTree);
-  };
-
-  const resetTree = () => {
-    setTree(initialTree);
-  };
-
+  const { treeData, updateData, data, treeIdx } = props;
+  const root = treeData.find((node) => node.depth === 0);
   return (
     <div className="tree-wrapper">
       <ul>
-        {tree.map((node) => {
-          if (node.depth === 1) {
-            return (
-              <TreeNode
-                key={`${node.left}:${node.right}`}
-                node={node}
-                tree={tree}
-                setTree={setTree}
-              />
-            );
-          }
-          return null;
-        })}
+        <TreeNode
+          key={`${root.id}`}
+          node={root}
+          treeData={treeData}
+          data={data}
+          updateData={updateData}
+          treeIdx={treeIdx}
+        />
       </ul>
-      <div>
-        <button onClick={() => addComment()}>Add comment</button>
-        <button onClick={() => resetTree()}>Reset tree</button>
-      </div>
     </div>
   );
 };
 
 const NestedStructureDemo = (props) => {
-  return <Tree />;
+  const [data, setData] = useState(initialData);
+
+  const updateData = (data) => {
+    setData(data);
+  };
+
+  const resetData = () => {
+    setData(initialData);
+  };
+
+  const addComment = () => {
+    const newComment = {
+      content: `Comment ${data.length + 1}`,
+      id: new Date().getTime(),
+      rootId: null,
+      type: COMMENT,
+      depth: 0,
+      left: 1,
+      right: 2,
+    };
+    const newData = [...data, [newComment]];
+    setData(newData);
+  };
+
+  return (
+    <div>
+      {data.map((treeData, treeIdx) => {
+        return (
+          <Tree
+            key={treeIdx}
+            updateData={updateData}
+            data={data}
+            treeData={treeData}
+            treeIdx={treeIdx}
+          />
+        );
+      })}
+      <div className="button-area">
+        <button onClick={() => addComment()}>Add comment</button>
+        <button onClick={() => resetData()}>Reset data</button>
+      </div>
+    </div>
+  );
 };
 
 export default NestedStructureDemo;
