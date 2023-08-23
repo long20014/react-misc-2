@@ -242,6 +242,7 @@ const NestedStructureDemo: FC<any> = (props) => {
 
   return (
     <div>
+      <h1>Nested structure demo</h1>
       {data.map((treeData, treeIdx) => {
         return <Tree key={treeIdx} updateData={updateData} data={data} treeData={treeData} treeIdx={treeIdx} />;
       })}

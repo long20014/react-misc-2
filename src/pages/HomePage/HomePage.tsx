@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
 import NestedStructureDemo from 'components/NestedStructureDemo/NestedStructureDemo';
+import GameDamageDemo from 'components/GameDamageDemo/GameDamageDemo';
 
 const HomePage = () => {
   return (
     <div>
-      <h1>Nested structure demo</h1>
-      <NestedStructureDemo />
+      {/* <NestedStructureDemo /> */}
+      <GameDamageDemo />
     </div>
   );
 };
