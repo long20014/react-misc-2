@@ -63,7 +63,7 @@ const GameDamageDemo: React.FC<any> = (props) => {
         return arr;
       }
       console.log(i);
-      await timeout(500);
+      await timeout(300);
       const damageObj = calculateDamageObj();
       arr.push(damageObj);
       setDamageList([...arr]);
@@ -114,8 +114,8 @@ const GameDamageDemo: React.FC<any> = (props) => {
       <br />
       <br />
       <div style={{ display: 'flex', justifyContent: 'space-between', maxWidth: '400px' }}>
-        <h3>{HP}</h3>
-        <h3>{enemyHP}</h3>
+        <h3>HP: {HP}</h3>
+        <h3>Enemy HP: {enemyHP}</h3>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', maxWidth: '400px' }}>
         <div>
