@@ -83,9 +83,6 @@ const TreeNode: FC<TreeNodeProps> = (props) => {
   const addChild = (content: any) => {
     const lastChild = childNodes.length > 0 ? childNodes[childNodes.length - 1] : null;
     const addedValue = 2;
-    const treeRightNodes: TreeNodeType[] = lastChild
-      ? treeData.filter((nodeItem: any) => nodeItem.left > lastChild.right)
-      : treeData.filter((nodeItem) => nodeItem.left > node.right);
 
     const newTree = treeData.map((nodeItem) => {
       if (lastChild && nodeItem.left > lastChild.right) {
