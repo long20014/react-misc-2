@@ -4,8 +4,8 @@ import GameDamageDemo from 'components/GameDamageDemo/GameDamageDemo';
 const HomePage = () => {
   return (
     <div>
-      {/* <NestedStructureDemo /> */}
-      <GameDamageDemo />
+      <NestedStructureDemo />
+      {/* <GameDamageDemo /> */}
     </div>
   );
 };

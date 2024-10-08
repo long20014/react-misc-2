@@ -1,6 +1,9 @@
 import { FC, useState } from 'react';
 import './style.scss';
-
+/* ref: 
+https://www.youtube.com/watch?v=PE6f66u7KBQ&list=PLo0eROXODBIH1hgJMmiLmia3deGQKlbI4&index=3&ab_channel=TipsJavascript
+https://www.youtube.com/watch?v=6594tqArXkA&list=PLo0eROXODBIH1hgJMmiLmia3deGQKlbI4&index=2&ab_channel=TipsJavascript
+*/
 enum NodeType {
   comment = 'comment',
   reply = 'reply',
